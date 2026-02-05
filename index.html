@@ -1,65 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🎉 Birthday Surprise</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>🎉 Birthday Surprise</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      overflow: hidden;
-    }
+<style>
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    overflow: hidden;
+  }
 
-    .screen {
-      display: none;
-      height: 100vh;
-      width: 100vw;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
+  .screen {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+  }
 
-    .active {
-      display: flex;
-    }
+  .active {
+    display: flex;
+  }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+  h1 {
+    margin-bottom: 10px;
+  }
 
-    .hint {
-      opacity: 0.8;
-      margin-top: 10px;
-      font-size: 18px;
-    }
+  /* ❤️ Glowing Heart */
+  .heart {
+    font-size: 80px;
+    animation: pulse 1.5s infinite;
+    color: #ff4d6d;
+    text-shadow: 0 0 20px #ff4d6d;
+  }
 
-    video {
-      width: 90%;
-      max-width: 480px;
-      border-radius: 14px;
-      margin-top: 20px;
-    }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
 
-    img {
-      width: 85%;
-      max-width: 320px;
-      border-radius: 15px;
-      margin-top: 20px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.25);
-    }
-  </style>
+  /* 👉 Swipe Hint */
+  .swipe {
+    margin-top: 20px;
+    font-size: 18px;
+    opacity: 0.8;
+    animation: swipeMove 1.5s infinite;
+  }
+
+  @keyframes swipeMove {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(20px); }
+    100% { transform: translateX(0); }
+  }
+
+  /* ✨ Sparkles */
+  .sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: sparkle 3s infinite;
+    opacity: 0.8;
+  }
+
+  @keyframes sparkle {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-120px) scale(0); opacity: 0; }
+  }
+
+  video {
+    width: 90%;
+    max-width: 480px;
+    border-radius: 14px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  }
+
+  img {
+    width: 85%;
+    max-width: 320px;
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.25);
+  }
+</style>
 </head>
+
 <body>
 
 <!-- SCREEN 1: SWIPE -->
 <div id="screen1" class="screen active">
-  <h1>🎁 A Small Surprise</h1>
-  <p class="hint">Swipe left or right to open</p>
+  <div class="heart">❤️</div>
+  <h1>A Small Surprise</h1>
+  <div class="swipe">Swipe to open ✨</div>
 </div>
 
 <!-- SCREEN 2: VIDEO -->
@@ -67,13 +109,12 @@
   <h1>🎂 Happy Birthday!</h1>
   <video id="bdayVideo" controls playsinline>
     <source src="birthday.mp4" type="video/mp4">
-    Your browser does not support video.
   </video>
 </div>
 
 <!-- SCREEN 3: PHOTO -->
 <div id="screen3" class="screen">
-  <h1>💖 Made for You</h1>
+  <h1>💖 Made With Love</h1>
   <img src="photo.jpg" alt="Birthday Photo">
 </div>
 
@@ -86,17 +127,26 @@
   const screen3 = document.getElementById("screen3");
   const video = document.getElementById("bdayVideo");
 
-  // Touch swipe detection
-  document.addEventListener("touchstart", e => {
-    startX = e.changedTouches[0].screenX;
-  });
+  // Sparkles generator
+  function createSparkle() {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = Math.random() * window.innerWidth + "px";
+    s.style.bottom = "0px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 3000);
+  }
 
+  setInterval(createSparkle, 300);
+
+  // Touch swipe
+  document.addEventListener("touchstart", e => startX = e.changedTouches[0].screenX);
   document.addEventListener("touchend", e => {
     endX = e.changedTouches[0].screenX;
     handleSwipe();
   });
 
-  // Mouse swipe (PC support)
+  // Mouse swipe
   document.addEventListener("mousedown", e => startX = e.screenX);
   document.addEventListener("mouseup", e => {
     endX = e.screenX;
@@ -110,7 +160,7 @@
     }
   }
 
-  // When video ends → show photo
+  // After video ends → show photo
   video.addEventListener("ended", () => {
     screen2.classList.remove("active");
     screen3.classList.add("active");
