@@ -1,44 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>🎉 Happy Birthday 🎂</title>
+  <meta charset="UTF-8">
+  <title>🎉 Birthday Surprise</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
-      background: #000;
-      color: #fff;
-      text-align: center;
+      margin: 0;
+      background: black;
+      color: white;
       font-family: Arial, sans-serif;
-      padding-top: 40px;
+      text-align: center;
+      overflow: hidden;
     }
+
+    .screen {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .active {
+      display: flex;
+    }
+
     h1 {
       margin-bottom: 10px;
     }
+
+    .hint {
+      opacity: 0.8;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
     video {
       width: 90%;
       max-width: 480px;
-      border-radius: 12px;
+      border-radius: 14px;
       margin-top: 20px;
     }
-    photo {
-  width: 85%;
-  max-width: 320px;
-  border-radius: 15px;
-  margin-top: 20px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.25);
-}
+
+    img {
+      width: 85%;
+      max-width: 320px;
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.25);
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎂 Happy Birthday!</h1>
-  <p>A small surprise just for you 💖</p>
-<img src="photo.jpg" alt="Birthday Photo" class="photo">
+<!-- SCREEN 1: SWIPE -->
+<div id="screen1" class="screen active">
+  <h1>🎁 A Small Surprise</h1>
+  <p class="hint">Swipe left or right to open</p>
+</div>
 
-  <video controls preload="metadata" playsinline>
+<!-- SCREEN 2: VIDEO -->
+<div id="screen2" class="screen">
+  <h1>🎂 Happy Birthday!</h1>
+  <video id="bdayVideo" controls playsinline>
     <source src="birthday.mp4" type="video/mp4">
-    Your browser does not support the video.
+    Your browser does not support video.
   </video>
+</div>
+
+<!-- SCREEN 3: PHOTO -->
+<div id="screen3" class="screen">
+  <h1>💖 Made for You</h1>
+  <img src="photo.jpg" alt="Birthday Photo">
+</div>
+
+<script>
+  let startX = 0;
+  let endX = 0;
+
+  const screen1 = document.getElementById("screen1");
+  const screen2 = document.getElementById("screen2");
+  const screen3 = document.getElementById("screen3");
+  const video = document.getElementById("bdayVideo");
+
+  // Touch swipe detection
+  document.addEventListener("touchstart", e => {
+    startX = e.changedTouches[0].screenX;
+  });
+
+  document.addEventListener("touchend", e => {
+    endX = e.changedTouches[0].screenX;
+    handleSwipe();
+  });
+
+  // Mouse swipe (PC support)
+  document.addEventListener("mousedown", e => startX = e.screenX);
+  document.addEventListener("mouseup", e => {
+    endX = e.screenX;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    if (Math.abs(endX - startX) > 50 && screen1.classList.contains("active")) {
+      screen1.classList.remove("active");
+      screen2.classList.add("active");
+    }
+  }
+
+  // When video ends → show photo
+  video.addEventListener("ended", () => {
+    screen2.classList.remove("active");
+    screen3.classList.add("active");
+  });
+</script>
 
 </body>
 </html>
